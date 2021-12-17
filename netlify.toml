@@ -1,5 +1,5 @@
 [build]
-command = "python3 build_repo.py"
+command = "python build_repo.py"
 publish = "public"
 [[headers]]
    for = "/*"
