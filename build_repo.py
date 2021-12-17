@@ -177,7 +177,7 @@ def parse_extensions(base_dir, base_url, ghub_session):
         # Build extension info (stateless)
         # https://domain.com/sub-domain/my-extension/index.json
         extension = dict(
-            identifier=ext_yaml['id'],
+            identifier=ext_yaml['id'].replace("org.","com."),
             name=ext_yaml['name'],
             content_type=ext_yaml['content_type'],
             area=ext_yaml.get('area', None),
