@@ -1,6 +1,5 @@
 [build]
 command = "python build_repo.py"
-publish = "public"
 [[headers]]
    for = "/*"
    [headers.values]
