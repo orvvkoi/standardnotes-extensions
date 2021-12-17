@@ -21,23 +21,6 @@ import requests
 import yaml
 
 
-def get_environment(base_dir):
-    """
-    Parse the environment variables from .env
-    """
-    temp_envvar = yaml.load("""
-        domain: https://domain.com/extensions
-        github:
-          username:
-          token:
-    """, Loader=yaml.FullLoader)
-    if os.path.isfile(os.path.join(base_dir, ".env")):
-        with open(os.path.join(base_dir, ".env")) as temp_env_file:
-            temp_envvar = yaml.load(temp_env_file, Loader=yaml.FullLoader)
-
-    return temp_envvar
-
-
 def process_zipball(repo_dir, release_version):
     """
     Grab the release zipball and extract it without the root/parent/top directory
@@ -238,46 +221,17 @@ def parse_extensions(base_dir, base_url, ghub_session):
     print("\nProcessed: {:20s}{} extensions. (Components: {}, Themes: {})".format("", len(extfiles), len(extfiles)-len(themefiles), len(themefiles)))
     print("Repository Endpoint URL: {:6s}{}/index.json".format("", base_url))
 
-def main():
+def main(base_url):
     """
     teh main function
     """
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    # Get environment variables
-    env_var = get_environment(base_dir)
-    base_url = env_var['domain']
     while base_url.endswith('/'):
         base_url = base_url[:-1]
+        
+    base_dir = os.path.dirname(os.path.abspath(__file__))
 
-    if (env_var['github']['username'] and env_var['github']['token']):
-        # Get a re-usable session object using user credentials
-        ghub_session = requests.Session()
-        ghub_session.auth = (env_var['github']['username'],
-                             env_var['github']['token'])
-        try:
-            ghub_verify = ghub_session.get("https://api.github.com/")
-            if not ghub_verify.headers['status'] == "200 OK":
-                print("Error: %s " % ghub_verify.headers['status'])
-                print(
-                    "Bad Github credentials in the .env file, check and try again."
-                )
-                sys.exit(1)
-        except Exception as e:
-            print("Unknown error occurred: %s" % e)
-        # Build extensions
-        parse_extensions(base_dir, base_url, ghub_session)
-        # Terminate Session
-        ghub_session.close()
-    else:
-        # Environment file missing
-        print(
-            "Environment variables not set (have a look at env.sample). Using Git Clone method instead"
-        )
-        input(
-            "⚠️ this is an in-efficient process, Press any key to continue:\n")
-        parse_extensions(base_dir, base_url, None)
-        sys.exit(0)
+
 
 
 if __name__ == '__main__':
-    main()
+     main(os.getenv('URL', 'https://snext.netlify.app/'))
