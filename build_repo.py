@@ -185,7 +185,6 @@ def parse_extensions(base_dir, base_url, ghub_session):
             description=ext_yaml.get('description', None),
             marketing_url=ext_yaml.get('marketing_url', None),
             thumbnail_url=ext_yaml.get('thumbnail_url', None),
-            valid_until='2030-05-16T18:35:33.000Z',
             url='/'.join([base_url, repo_name, ext_version, ext_yaml['main']]),
             download_url='https://github.com/{}/archive/{}.zip'.format(
                 ext_yaml['github'], ext_version),
@@ -229,7 +228,6 @@ def parse_extensions(base_dir, base_url, ghub_session):
         json.dump(
             dict(
                 content_type='SN|Repo',
-                valid_until='2030-05-16T18:35:33.000Z',
                 packages=extensions,
             ),
             ext_json,
